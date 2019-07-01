@@ -8,34 +8,39 @@ import (
 )
 
 
-var single = logging.MustGetLogger("example")
-var format = logging.MustStringFormatter(
-    `%{color}%{time:15:04:05.000} %{shortfunc} > %{level:.4s} %{id:03x}%{color:reset} %{message}`,
-)
+var single *logging.Logger
+var filePath   string 
+var logFile	*os.File
 
+type LogUtil struct{}
 
-type LogUtil struct {
-	FilePath   string  // 日志文件路径和名称
-}
 
 func (p *LogUtil) Get() (*logging.Logger, error){
-	if p.FilePath == "" {
+	if filePath == "" {
 		error := errors.New("filePath is null")
 		return nil, error
+		// filePath = "test.log"
 	}
 	if single == nil {
-		p.Init(p.FilePath)
+		p.Init(filePath)
 	}
 	return single, nil
 }
 
-func (p *LogUtil) Init(filePath string) {
-	p.FilePath = filePath
-	logFile, err := os.OpenFile(p.FilePath, os.O_WRONLY,0666)
+
+func (p *LogUtil) Init(path string) {
+	// fmt.Println("start init log")
+	var err error
+	single = logging.MustGetLogger("example")
+	var format = logging.MustStringFormatter(
+		`%{color}%{time:15:04:05.000} %{shortfunc} > %{level:.4s} %{id:03x}%{color:reset} %{message}`,
+	)
+
+	filePath = path
+	logFile, err = os.OpenFile(filePath, os.O_APPEND|os.O_CREATE, 666)
     if err != nil{
         fmt.Println(err)
     }
-	defer logFile.Close()
     backend1 := logging.NewLogBackend(logFile, "", 0)
     backend2 := logging.NewLogBackend(os.Stderr, "", 0)
  
@@ -44,4 +49,23 @@ func (p *LogUtil) Init(filePath string) {
     backend1Leveled.SetLevel(logging.INFO, "")
  
     logging.SetBackend(backend1Leveled, backend2Formatter)
+}
+
+func (p *LogUtil) Info(detail ...interface{}){
+	if single == nil {
+		p.Init(filePath)
+	} 
+	single.Info(detail...)
+}
+func (p *LogUtil)  Warning(detail ...interface{}){
+	if single == nil {
+		p.Init(filePath)
+	}
+	single.Warning(detail...)
+}
+func (p *LogUtil)  Error(detail ...interface{}){
+	if single == nil {
+		p.Init(filePath)
+	}
+	single.Error(detail...)
 }

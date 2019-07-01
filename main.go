@@ -2,20 +2,13 @@ package main
 
 import (
 	"weixin/util"
-	"fmt"
-	// "net/http"
+	// "fmt"
+	"weixin/api"
 )
 
 func main() {
-	// tool := new(util.LogUtil);
-	var tool util.LogUtil
-	tool.FilePath = "test.log"
-	// tool.init("test.log")
-	log,err := tool.Get()
-	if err != nil{
-		fmt.Println(err)
-	}
-
-	log.Info("Hello, World!")
-	// fmt.Println("Hello, World!")
+	var log util.LogUtil
+	log.Init("test.log")
+	log.Info("start work!")
+	api.Start(":10000")
 }
