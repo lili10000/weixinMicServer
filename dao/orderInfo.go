@@ -16,7 +16,6 @@ var log util.LogUtil
 func init() {
 	var err error
 	db, err = sql.Open("mysql", "gac:123MAGICBOX!@#@tcp(gz-cdb-bx3dc6o1.sql.tencentcdb.com:61283)/gac_mobile_vehicle?charset=utf8")
-	// db, err = sql.Open("mysql", "gac:123MAGICBOX!@#@111.230.187.249:61283/gac_mobile_vehicle?charset=utf8")
 	if err != nil {
 		log.Error(err)
 	}
@@ -26,7 +25,6 @@ func init() {
 	if err != nil {
 		log.Error(err)
 	}
-	log.Info("init mysql pool ok")
 }
 
 func QueryOrderDay(day string) int {

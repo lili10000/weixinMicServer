@@ -27,7 +27,6 @@ func (p *LogUtil) Get() (*logging.Logger, error) {
 }
 
 func (p *LogUtil) InitLog(path string) {
-	// fmt.Println("start init log")
 	var err error
 	single = logging.MustGetLogger("example")
 	var format = logging.MustStringFormatter(
@@ -52,18 +51,21 @@ func (p *LogUtil) InitLog(path string) {
 
 func (p *LogUtil) Info(detail ...interface{}) {
 	if single == nil {
+		fmt.Println(detail)
 		p.InitLog(filePath)
 	}
 	single.Info(detail...)
 }
 func (p *LogUtil) Warning(detail ...interface{}) {
 	if single == nil {
+		fmt.Println(detail)
 		p.InitLog(filePath)
 	}
 	single.Warning(detail...)
 }
 func (p *LogUtil) Error(detail ...interface{}) {
 	if single == nil {
+		fmt.Println(detail)
 		p.InitLog(filePath)
 	}
 	single.Error(detail...)
