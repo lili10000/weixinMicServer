@@ -1,21 +1,20 @@
 package util
 
 import (
-	"github.com/op/go-logging"
 	"errors"
-	"os"
 	"fmt"
+	"os"
+
+	"github.com/op/go-logging"
 )
 
-
 var single *logging.Logger
-var filePath   string 
-var logFile	*os.File
+var filePath string
+var logFile *os.File
 
 type LogUtil struct{}
 
-
-func (p *LogUtil) Get() (*logging.Logger, error){
+func (p *LogUtil) Get() (*logging.Logger, error) {
 	if filePath == "" {
 		error := errors.New("filePath is null")
 		return nil, error
@@ -27,7 +26,6 @@ func (p *LogUtil) Get() (*logging.Logger, error){
 	return single, nil
 }
 
-
 func (p *LogUtil) Init(path string) {
 	// fmt.Println("start init log")
 	var err error
@@ -37,33 +35,33 @@ func (p *LogUtil) Init(path string) {
 	)
 
 	filePath = path
-	logFile, err = os.OpenFile(filePath, os.O_APPEND|os.O_CREATE, 666)
-    if err != nil{
-        fmt.Println(err)
-    }
-    backend1 := logging.NewLogBackend(logFile, "", 0)
-    backend2 := logging.NewLogBackend(os.Stderr, "", 0)
- 
-    backend2Formatter := logging.NewBackendFormatter(backend2, format)
-    backend1Leveled := logging.AddModuleLevel(backend1)
-    backend1Leveled.SetLevel(logging.INFO, "")
- 
-    logging.SetBackend(backend1Leveled, backend2Formatter)
+	logFile, err = os.OpenFile(filePath, os.O_CREATE|os.O_APPEND|os.O_RDWR, 666)
+	if err != nil {
+		fmt.Println(err)
+	}
+	backend1 := logging.NewLogBackend(logFile, "", 0)
+	backend2 := logging.NewLogBackend(os.Stderr, "", 0)
+
+	backend2Formatter := logging.NewBackendFormatter(backend2, format)
+	backend1Leveled := logging.AddModuleLevel(backend1)
+	backend1Leveled.SetLevel(logging.INFO, "")
+
+	logging.SetBackend(backend1Leveled, backend2Formatter)
 }
 
-func (p *LogUtil) Info(detail ...interface{}){
+func (p *LogUtil) Info(detail ...interface{}) {
 	if single == nil {
 		p.Init(filePath)
-	} 
+	}
 	single.Info(detail...)
 }
-func (p *LogUtil)  Warning(detail ...interface{}){
+func (p *LogUtil) Warning(detail ...interface{}) {
 	if single == nil {
 		p.Init(filePath)
 	}
 	single.Warning(detail...)
 }
-func (p *LogUtil)  Error(detail ...interface{}){
+func (p *LogUtil) Error(detail ...interface{}) {
 	if single == nil {
 		p.Init(filePath)
 	}
