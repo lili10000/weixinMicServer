@@ -21,12 +21,12 @@ func (p *LogUtil) Get() (*logging.Logger, error) {
 		// filePath = "test.log"
 	}
 	if single == nil {
-		p.Init(filePath)
+		p.InitLog(filePath)
 	}
 	return single, nil
 }
 
-func (p *LogUtil) Init(path string) {
+func (p *LogUtil) InitLog(path string) {
 	// fmt.Println("start init log")
 	var err error
 	single = logging.MustGetLogger("example")
@@ -37,7 +37,8 @@ func (p *LogUtil) Init(path string) {
 	filePath = path
 	logFile, err = os.OpenFile(filePath, os.O_CREATE|os.O_APPEND|os.O_RDWR, 666)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(filePath, path, err)
+		os.Exit(3)
 	}
 	backend1 := logging.NewLogBackend(logFile, "", 0)
 	backend2 := logging.NewLogBackend(os.Stderr, "", 0)
@@ -51,19 +52,19 @@ func (p *LogUtil) Init(path string) {
 
 func (p *LogUtil) Info(detail ...interface{}) {
 	if single == nil {
-		p.Init(filePath)
+		p.InitLog(filePath)
 	}
 	single.Info(detail...)
 }
 func (p *LogUtil) Warning(detail ...interface{}) {
 	if single == nil {
-		p.Init(filePath)
+		p.InitLog(filePath)
 	}
 	single.Warning(detail...)
 }
 func (p *LogUtil) Error(detail ...interface{}) {
 	if single == nil {
-		p.Init(filePath)
+		p.InitLog(filePath)
 	}
 	single.Error(detail...)
 }
