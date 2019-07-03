@@ -27,22 +27,19 @@ func init() {
 	}
 }
 
-func QueryOrderDay(day string) int {
+func QueryCountBySql(sql string) int{
 	defer func() { //统一异常处理
 		if err := recover(); err != nil {
-			log.Error(err)
+			log.Error(err, "sql:",sql)
 		}
 	}()
-
 	count := 0
-	sql := fmt.Sprintf("SELECT count(*) FROM customer_order where (TO_DAYS(CO_ORDER_DATE) = TO_DAYS('%s'))", day)
 	if db == nil {
 		panic(errors.New("db is nil"))
 	}
 	rows, err := db.Query(sql)
 	defer rows.Close()
 	checkErr(err)
-
 	for rows.Next() {
 		var countStr string
 		err = rows.Scan(&countStr)
@@ -54,8 +51,21 @@ func QueryOrderDay(day string) int {
 	return count
 }
 
+func QueryOrderDay(day string) int {
+	sql := fmt.Sprintf("SELECT count(*) FROM customer_order where (TO_DAYS(CO_ORDER_DATE) = TO_DAYS('%s'))", day)
+	return QueryCountBySql(sql)
+}
+
+func QuerySellOrderDay(day string) int {
+	sql := fmt.Sprintf("SELECT count(*) FROM customer_order where (TO_DAYS(CO_ORDER_DATE) = TO_DAYS('%s') and CO_PAY_STATE = 1 )", day)
+	return QueryCountBySql(sql)
+}
+
 func QueryOrderToday() int {
 	return QueryOrderDay("now()")
+}
+func QuerySellOrderToday() int {
+	return QuerySellOrderDay("now()")
 }
 
 func checkErr(err error) {

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 	"weixin/dao"
+	"fmt"
 	. "weixin/entity"
 	"weixin/entity/errCode"
 )
@@ -14,18 +15,20 @@ func QueryOrderByDay(w http.ResponseWriter, req *http.Request) {
 	defer EndRequestLog(startTime, req.URL.Path)
 
 	values := req.URL.Query()
-	countRetn := 0
+	var countRetn, sellCountRetn int
 	if dataStr := values.Get("date"); len(dataStr) > 0 {
 		countRetn = dao.QueryOrderDay(dataStr)
+		sellCountRetn = dao.QuerySellOrderDay(dataStr)
 	} else {
 		countRetn = dao.QueryOrderToday()
+		sellCountRetn = dao.QuerySellOrderToday()
 	}
-
+	// count := fmt.Sprintf("%d, 销售数 %d", countRetn, sellCountRetn)
 	var retn OrderCountRetn
 	retn.Code = errCode.Success
 	retn.Msg = ""
 	retn.Data = OrderCount{
-		Count: countRetn,
+		Count: fmt.Sprintf("%d, 销售数 %d", countRetn, sellCountRetn),
 	}
 	retnStr, err := json.Marshal(retn)
 	if err != nil {
