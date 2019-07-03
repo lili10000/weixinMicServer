@@ -10,7 +10,7 @@ import (
 )
 
 func QueryOrderByDay(w http.ResponseWriter, req *http.Request) {
-	startTime := time.Now().Unix()
+	startTime := time.Now().UnixNano() / 1e6
 	defer EndRequestLog(startTime, req.URL.Path)
 
 	values := req.URL.Query()

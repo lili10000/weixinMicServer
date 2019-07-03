@@ -14,10 +14,10 @@ func initDispath() {
 
 func Start(ip string) {
 	initDispath()
-	log.Info(http.ListenAndServe(ip, nil))
+	log.Info(http.ListenAndServeTLS(ip, "1_gacicv.com_bundle.crt", "2_gacicv.com.key", nil))
 }
 
 func EndRequestLog(startTime int64, url string) {
-	endTime := time.Now().Unix()
-	log.Info(url, " used ", endTime-startTime, "ms")
+	endTime := time.Now().UnixNano() / 1e6
+	log.Info(url, " used ", endTime-startTime, "s")
 }
