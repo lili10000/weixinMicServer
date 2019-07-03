@@ -40,13 +40,14 @@ func (p *LogUtil) InitLog(path string) {
 		os.Exit(3)
 	}
 	backend1 := logging.NewLogBackend(logFile, "", 0)
-	backend2 := logging.NewLogBackend(os.Stderr, "", 0)
-
-	backend2Formatter := logging.NewBackendFormatter(backend2, format)
+	backend1Formatter := logging.NewBackendFormatter(backend1, format)
 	backend1Leveled := logging.AddModuleLevel(backend1)
 	backend1Leveled.SetLevel(logging.INFO, "")
+	logging.SetBackend(backend1Leveled, backend1Formatter)
 
-	logging.SetBackend(backend1Leveled, backend2Formatter)
+	// backend2 := logging.NewLogBackend(os.Stderr, "", 0)
+	// backend2Formatter := logging.NewBackendFormatter(backend2, format)
+	// logging.SetBackend(backend1Leveled, backend2Formatter)
 }
 
 func (p *LogUtil) Info(detail ...interface{}) {

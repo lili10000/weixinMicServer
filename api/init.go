@@ -19,5 +19,5 @@ func Start(ip string) {
 
 func EndRequestLog(startTime int64, url string) {
 	endTime := time.Now().UnixNano() / 1e6
-	log.Info(url, " used ", endTime-startTime, "s")
+	log.Info(url, " used ", endTime-startTime, "ms")
 }
