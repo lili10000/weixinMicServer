@@ -16,3 +16,9 @@ func TestQuerySellOrderDay(t *testing.T) {
 	// count := QueryOrderDay("now()")
 	fmt.Println("TestQuerySellOrderDay", count)
 }
+
+func TestQuerySellNumToday(t *testing.T) {
+	count := QuerySellNumDay("2019-06-28")
+	// count := QueryOrderDay("now()")
+	fmt.Println("TestQuerySellNumToday", count)
+}
