@@ -17,10 +17,10 @@ func QueryOrderByDay(w http.ResponseWriter, req *http.Request) {
 	values := req.URL.Query()
 	var countRetn, sellCountRetn int
 	if dataStr := values.Get("date"); len(dataStr) > 0 {
-		countRetn = dao.QuerySellOrderDay(dataStr)
+		countRetn = dao.QueryOrderDay(dataStr)
 		sellCountRetn = dao.QuerySellNumDay(dataStr)
 	} else {
-		countRetn = dao.QuerySellOrderToday()
+		countRetn = dao.QueryOrderToday()
 		sellCountRetn = dao.QuerySellNumToday()
 	}
 	// count := fmt.Sprintf("%d, 销售数 %d", countRetn, sellCountRetn)
