@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"strconv"
 	"weixin/util"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -12,28 +11,32 @@ import (
 
 var db *sql.DB
 var log util.LogUtil
+var config util.Config
 
 func init() {
 	var err error
-	db, err = sql.Open("mysql", "gac:123MAGICBOX!@#@tcp(gz-cdb-bx3dc6o1.sql.tencentcdb.com:61283)/gac_mobile_vehicle?charset=utf8")
+	mysqlConfig := config.Get()
+	// fmt.Println(mysqlConfig)
+
+	db, err = sql.Open("mysql", mysqlConfig.Mysql.Server)
 	if err != nil {
 		log.Error(err)
 	}
-	db.SetMaxOpenConns(10)
-	db.SetMaxIdleConns(10)
+	db.SetMaxOpenConns(mysqlConfig.Mysql.MaxConn)
+	db.SetMaxIdleConns(mysqlConfig.Mysql.MaxIdleConn)
 	err = db.Ping()
 	if err != nil {
 		log.Error(err)
 	}
 }
 
-func QueryCountBySql(sql string) int{
+func QueryCountBySql(sql string) string {
 	defer func() { //统一异常处理
 		if err := recover(); err != nil {
-			log.Error(err, "sql:",sql)
+			log.Error(err, "sql:", sql)
 		}
 	}()
-	count := 0
+	var countStr string
 	if db == nil {
 		panic(errors.New("db is nil"))
 	}
@@ -41,65 +44,55 @@ func QueryCountBySql(sql string) int{
 	defer rows.Close()
 	checkErr(err)
 	for rows.Next() {
-		var countStr string
 		err = rows.Scan(&countStr)
-		checkErr(err)
-		count, err = strconv.Atoi(countStr)
 		checkErr(err)
 		break
 	}
-	return count
+	return countStr
 }
 
-func QueryBySql(sql string) int{
-	defer func() { //统一异常处理
-		if err := recover(); err != nil {
-			log.Error(err, "sql:",sql)
-		}
-	}()
-	count := 0
-	if db == nil {
-		panic(errors.New("db is nil"))
-	}
-	sql = ""
-	rows, err := db.Query(sql)
-	defer rows.Close()
-	checkErr(err)
-	for rows.Next() {
-		var countStr string
-		err = rows.Scan(&countStr)
-		checkErr(err)
-		fmt.Println(countStr)
-		// count, err = strconv.Atoi(countStr)
-		// checkErr(err)
-		break
-	}
-	return count
-}
-
-func QueryOrderDay(day string) int {
+func QueryOrderDay(day string) string {
 	sql := fmt.Sprintf("SELECT count(*) FROM customer_order where (TO_DAYS(CO_ORDER_DATE) = TO_DAYS('%s'))", day)
 	return QueryCountBySql(sql)
 }
 
-func QuerySellOrderDay(day string) int {
+func QuerySellOrderDay(day string) string {
 	sql := fmt.Sprintf("SELECT count(*) FROM customer_order where (TO_DAYS(CO_ORDER_DATE) = TO_DAYS('%s') and CO_PAY_STATE = 1 )", day)
 	return QueryCountBySql(sql)
 }
 
-func QuerySellNumDay(day string) int {
+func QuerySellNumDay(day string) string {
 	sql := fmt.Sprintf("select sum(nums) from view_order_pay where TO_DAYS(下单时间)=TO_DAYS('%s');", day)
 	return QueryCountBySql(sql)
 }
 
-func QueryOrderToday() int {
+func QuerySellMoneyPriceDay(day string) string {
+	sql := fmt.Sprintf("select ROUND(sum(总价),2) from view_order_pay where TO_DAYS(下单时间)=TO_DAYS('%s');", day)
+	return QueryCountBySql(sql)
+}
+
+// 实收
+func QuerySellMoneyRecvDay(day string) string {
+	sql := fmt.Sprintf("select ROUND(sum(实收合计),2) from view_order_pay where TO_DAYS(下单时间)=TO_DAYS('%s');", day)
+	return QueryCountBySql(sql)
+}
+
+func QuerySellMoneyRecvToday() string {
+	return QuerySellMoneyPriceDay("now()")
+}
+
+func QuerySellMoneyPriceToday() string {
+	return QuerySellMoneyPriceDay("now()")
+}
+
+func QueryOrderToday() string {
 	return QueryOrderDay("now()")
 }
-func QuerySellOrderToday() int {
+func QuerySellOrderToday() string {
 	return QuerySellOrderDay("now()")
 }
 
-func QuerySellNumToday() int {
+func QuerySellNumToday() string {
 	return QuerySellNumDay("now()")
 }
 

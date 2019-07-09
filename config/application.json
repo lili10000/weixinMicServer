@@ -1,0 +1,8 @@
+{
+    "appName":"dataServer",
+    "mysql":{
+        "server": "gac:123MAGICBOX!@#@tcp(gz-cdb-bx3dc6o1.sql.tencentcdb.com:61283)/gac_mobile_vehicle?charset=utf8",
+        "maxConn" : 10,
+        "maxIdleConn" : 10
+    }
+}

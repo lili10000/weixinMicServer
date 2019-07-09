@@ -5,20 +5,32 @@ import (
 	"testing"
 )
 
-func TestQueryOrderDay(t *testing.T) {
-	count := QueryOrderDay("2019-06-28")
+// func TestQueryOrderDay(t *testing.T) {
+// 	count := QueryOrderDay("2019-06-28")
+// 	// count := QueryOrderDay("now()")
+// 	fmt.Println("TestQueryOrderDay", count)
+// }
+
+func TestQuerySellMoneyPriceDay(t *testing.T) {
+	count := QuerySellMoneyPriceDay("2019-06-28")
 	// count := QueryOrderDay("now()")
-	fmt.Println("TestQueryOrderDay", count)
+	fmt.Println("TestQuerySellMoneyPriceDay", count)
 }
 
-func TestQuerySellOrderDay(t *testing.T) {
-	count := QuerySellOrderDay("2019-06-28")
+func TestQuerySellMoneyRecvDay(t *testing.T) {
+	count := QuerySellMoneyRecvDay("2019-06-28")
 	// count := QueryOrderDay("now()")
-	fmt.Println("TestQuerySellOrderDay", count)
+	fmt.Println("TestQuerySellMoneyRecvDay", count)
 }
 
-func TestQuerySellNumToday(t *testing.T) {
-	count := QuerySellNumDay("2019-06-28")
-	// count := QueryOrderDay("now()")
-	fmt.Println("TestQuerySellNumToday", count)
-}
+// func TestQuerySellOrderDay(t *testing.T) {
+// 	count := QuerySellOrderDay("2019-06-28")
+// 	// count := QueryOrderDay("now()")
+// 	fmt.Println("TestQuerySellOrderDay", count)
+// }
+
+// func TestQuerySellNumToday(t *testing.T) {
+// 	count := QuerySellNumDay("2019-06-28")
+// 	// count := QueryOrderDay("now()")
+// 	fmt.Println("TestQuerySellNumToday", count)
+// }
