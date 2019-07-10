@@ -67,13 +67,13 @@ func QuerySellNumDay(day string) string {
 }
 
 func QuerySellMoneyPriceDay(day string) string {
-	sql := fmt.Sprintf("select ROUND(sum(MD_ORIGINAL_ACOUNT),2) from view_order_pay where TO_DAYS(CO_ORDER_DATE)=TO_DAYS('%s');", day)
+	sql := fmt.Sprintf("select ROUND(sum(MD_ORIGINAL_ACOUNT),2) from view_order_pay where (TO_DAYS(CO_ORDER_DATE)=TO_DAYS('%s') and CO_STATE = 10);", day)
 	return QueryCountBySql(sql)
 }
 
 // 实收
 func QuerySellMoneyRecvDay(day string) string {
-	sql := fmt.Sprintf("select ROUND(sum(MD_ACOUNT),2) from view_order_pay where TO_DAYS(CO_ORDER_DATE)=TO_DAYS('%s');", day)
+	sql := fmt.Sprintf("select ROUND(sum(MD_ACOUNT),2) from view_order_pay where (TO_DAYS(CO_ORDER_DATE)=TO_DAYS('%s') and CO_STATE = 10);", day)
 	return QueryCountBySql(sql)
 }
 

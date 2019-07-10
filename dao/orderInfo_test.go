@@ -20,10 +20,10 @@ import (
 // 	fmt.Println("TestQuerySellMoneyPriceDay", count)
 // }
 
-// func TestQuerySellMoneyRecvDay(t *testing.T) {
-// 	count := QuerySellMoneyRecvDay("2019-07-10")
-// 	fmt.Println("TestQuerySellMoneyRecvDay", count)
-// }
+func TestQuerySellMoneyRecvDay(t *testing.T) {
+	count := QuerySellMoneyRecvDay("2019-07-10")
+	fmt.Println("TestQuerySellMoneyRecvDay", count)
+}
 
 // func TestQuerySellOrderDay(t *testing.T) {
 // 	count := QuerySellOrderDay("2019-07-10")
