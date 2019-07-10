@@ -15,18 +15,25 @@ func QueryOrderByDay(w http.ResponseWriter, req *http.Request) {
 	defer EndRequestLog(startTime, req.URL.Path)
 
 	values := req.URL.Query()
-	var countRetn, sellCountRetn, moneyPrice, moneyRecv string
-	if dataStr := values.Get("date"); len(dataStr) > 0 {
-		countRetn = dao.QuerySellOrderDay(dataStr)
-		sellCountRetn = dao.QuerySellNumDay(dataStr)
-		moneyPrice = dao.QuerySellMoneyPriceDay(dataStr)
-		moneyRecv = dao.QuerySellMoneyRecvDay(dataStr)
-	} else {
-		countRetn = dao.QuerySellOrderToday()
-		sellCountRetn = dao.QuerySellNumToday()
-		moneyPrice = dao.QuerySellMoneyPriceToday()
-		moneyRecv = dao.QuerySellMoneyRecvToday()
-	}
+
+	dataStr := values.Get("date")
+	countRetn := dao.QuerySellOrderDay(dataStr)
+	sellCountRetn := dao.QuerySellNumDay(dataStr)
+	moneyPrice := dao.QuerySellMoneyPriceDay(dataStr)
+	moneyRecv := dao.QuerySellMoneyRecvDay(dataStr)
+
+	// var countRetn, sellCountRetn, moneyPrice, moneyRecv string
+	// if dataStr := values.Get("date"); len(dataStr) > 0 {
+	// 	countRetn = dao.QuerySellOrderDay(dataStr)
+	// 	sellCountRetn = dao.QuerySellNumDay(dataStr)
+	// 	moneyPrice = dao.QuerySellMoneyPriceDay(dataStr)
+	// 	moneyRecv = dao.QuerySellMoneyRecvDay(dataStr)
+	// } else {
+	// 	countRetn = dao.QuerySellOrderToday()
+	// 	sellCountRetn = dao.QuerySellNumToday()
+	// 	moneyPrice = dao.QuerySellMoneyPriceToday()
+	// 	moneyRecv = dao.QuerySellMoneyRecvToday()
+	// }
 	// count := fmt.Sprintf("%d, 销售数 %d", countRetn, sellCountRetn)
 	var retn OrderCountRetn
 	retn.Code = errCode.Success

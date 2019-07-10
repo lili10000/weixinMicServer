@@ -52,49 +52,49 @@ func QueryCountBySql(sql string) string {
 }
 
 func QueryOrderDay(day string) string {
-	sql := fmt.Sprintf("SELECT count(*) FROM customer_order where (TO_DAYS(CO_ORDER_DATE) = TO_DAYS('%s'))", day)
+	sql := fmt.Sprintf("SELECT count(distinct CO_SERIAL_CODE) FROM view_order_pay where (TO_DAYS(CO_ORDER_DATE) = TO_DAYS('%s'))", day)
 	return QueryCountBySql(sql)
 }
 
 func QuerySellOrderDay(day string) string {
-	sql := fmt.Sprintf("SELECT count(*) FROM customer_order where (TO_DAYS(CO_ORDER_DATE) = TO_DAYS('%s') and CO_PAY_STATE = 1 )", day)
+	sql := fmt.Sprintf("SELECT count(distinct CO_SERIAL_CODE) FROM view_order_pay where (TO_DAYS(CO_ORDER_DATE) = TO_DAYS('%s') and CO_STATE = 10 )", day)
 	return QueryCountBySql(sql)
 }
 
 func QuerySellNumDay(day string) string {
-	sql := fmt.Sprintf("select sum(nums) from view_order_pay where TO_DAYS(下单时间)=TO_DAYS('%s');", day)
+	sql := fmt.Sprintf("select sum(MD_COUNT) from view_order_pay where (TO_DAYS(CO_ORDER_DATE)=TO_DAYS('%s') and CO_STATE = 10);", day)
 	return QueryCountBySql(sql)
 }
 
 func QuerySellMoneyPriceDay(day string) string {
-	sql := fmt.Sprintf("select ROUND(sum(总价),2) from view_order_pay where TO_DAYS(下单时间)=TO_DAYS('%s');", day)
+	sql := fmt.Sprintf("select ROUND(sum(MD_ORIGINAL_ACOUNT),2) from view_order_pay where TO_DAYS(CO_ORDER_DATE)=TO_DAYS('%s');", day)
 	return QueryCountBySql(sql)
 }
 
 // 实收
 func QuerySellMoneyRecvDay(day string) string {
-	sql := fmt.Sprintf("select ROUND(sum(实收合计),2) from view_order_pay where TO_DAYS(下单时间)=TO_DAYS('%s');", day)
+	sql := fmt.Sprintf("select ROUND(sum(MD_ACOUNT),2) from view_order_pay where TO_DAYS(CO_ORDER_DATE)=TO_DAYS('%s');", day)
 	return QueryCountBySql(sql)
 }
 
-func QuerySellMoneyRecvToday() string {
-	return QuerySellMoneyPriceDay("now()")
-}
+// func QuerySellMoneyRecvToday() string {
+// 	return QuerySellMoneyPriceDay("now()")
+// }
 
-func QuerySellMoneyPriceToday() string {
-	return QuerySellMoneyPriceDay("now()")
-}
+// func QuerySellMoneyPriceToday() string {
+// 	return QuerySellMoneyPriceDay("now()")
+// }
 
-func QueryOrderToday() string {
-	return QueryOrderDay("now()")
-}
-func QuerySellOrderToday() string {
-	return QuerySellOrderDay("now()")
-}
+// func QueryOrderToday() string {
+// 	return QueryOrderDay("now()")
+// }
+// func QuerySellOrderToday() string {
+// 	return QuerySellOrderDay("now()")
+// }
 
-func QuerySellNumToday() string {
-	return QuerySellNumDay("now()")
-}
+// func QuerySellNumToday() string {
+// 	return QuerySellNumDay("now()")
+// }
 
 func checkErr(err error) {
 	if err != nil {
