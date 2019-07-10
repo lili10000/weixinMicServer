@@ -39,7 +39,7 @@ func QueryOrderByDay(w http.ResponseWriter, req *http.Request) {
 	retn.Code = errCode.Success
 	retn.Msg = ""
 	retn.Data = OrderCount{
-		Count: fmt.Sprintf("%s, 销售数: %s, 销售总额：%s, 实收金额： %s", countRetn, sellCountRetn, moneyPrice, moneyRecv),
+		Count: fmt.Sprintf("    %s\n销售数:     %s\n销售总额:   %s\n实收金额:   %s", countRetn, sellCountRetn, moneyPrice, moneyRecv),
 	}
 	retnStr, err := json.Marshal(retn)
 	if err != nil {
