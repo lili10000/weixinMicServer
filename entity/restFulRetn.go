@@ -6,9 +6,18 @@ type Comm struct {
 	// data []interface{} `json:"data"`
 }
 
+type SessionInfo struct {
+	Time       string `json:"time"`
+	Addr       string `json:"addr"`
+	OrderCount string `json:"orderCount"`
+	SellCount  string `json:"sellCount"`
+	MoneyPrice string `json:"moneyPrice"`
+	MoneyRecv  string `json:"moneyRecv"`
+}
+
 type OrderCount struct {
 	Sum    string   `json:"sum"`
-	Detail []string `json:"detail"`
+	Info []SessionInfo `json:"detail"`
 }
 
 type OrderCountRetn struct {

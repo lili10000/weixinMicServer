@@ -26,14 +26,16 @@ func QueryOrderByDay(w http.ResponseWriter, req *http.Request) {
 	data.Sum = fmt.Sprintf("订单: %s 销售: %s 销售总额: %s 实收: %s", countRetn, sellCountRetn, moneyPrice, moneyRecv)
 	sessionList := dao.QuerySession(dataStr)
 	for _, session := range sessionList {
-		addr := session[0]
+		var info SessionInfo
 		time := session[1]
-		sessionCount := dao.QuerySellOrderSession(time)
-		sessionSellCount := dao.QuerySellNumSession(time)
-		sessionMoneyPrice := dao.QuerySellMoneyPriceSession(time)
-		sessionMoneyRecv := dao.QuerySellMoneyRecvSession(time)
-		sessionInfo := fmt.Sprintf("场次：%s 时间: %s 订单: %s 销售: %s 销售总额: %s 实收: %s", addr, time, sessionCount, sessionSellCount, sessionMoneyPrice, sessionMoneyRecv)
-		data.Detail = append(data.Detail, sessionInfo)
+		info.Addr = session[0]
+		info.Time = session[1]
+		info.OrderCount = dao.QuerySellOrderSession(time)
+		info.SellCount = dao.QuerySellNumSession(time)
+		info.MoneyPrice = dao.QuerySellMoneyPriceSession(time)
+		info.MoneyRecv = dao.QuerySellMoneyRecvSession(time)
+		// sessionInfo := fmt.Sprintf("时间: %s	场次：%s\n订单: %s 销售: %s 销售总额: %s 实收: %s", time, addr, sessionCount, sessionSellCount, sessionMoneyPrice, sessionMoneyRecv)
+		data.Info = append(data.Info, info)
 	}
 
 	var retn OrderCountRetn

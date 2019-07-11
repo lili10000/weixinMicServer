@@ -10,6 +10,6 @@ func main() {
 	var log util.LogUtil
 	log.InitLog("test.log")
 	log.Info("start work!")
-	api.Start(":443")
-	// api.Start(":10000")
+	// api.Start(":443")
+	api.Start(":10000")
 }
