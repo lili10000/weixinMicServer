@@ -16,17 +16,19 @@ func QueryOrderByDay(w http.ResponseWriter, req *http.Request) {
 	values := req.URL.Query()
 
 	dataStr := values.Get("date")
-	countRetn := dao.QuerySellOrderDay(dataStr)
-	sellCountRetn := dao.QuerySellNumDay(dataStr)
-	moneyPrice := dao.QuerySellMoneyPriceDay(dataStr)
-	moneyRecv := dao.QuerySellMoneyRecvDay(dataStr)
+
+	recvList := dao.QueryDayInfo(dataStr)
+	// countRetn := dao.QuerySellOrderDay(dataStr)
+	// sellCountRetn := dao.QuerySellNumDay(dataStr)
+	// moneyPrice := dao.QuerySellMoneyPriceDay(dataStr)
+	// moneyRecv := dao.QuerySellMoneyRecvDay(dataStr)
 
 	var data OrderCount
 	data.Sum = SessionInfo{
-		OrderCount: countRetn,
-		SellCount:  sellCountRetn,
-		MoneyPrice: moneyPrice,
-		MoneyRecv:  moneyRecv,
+		OrderCount: recvList[0],
+		SellCount:  recvList[1],
+		MoneyPrice: recvList[2],
+		MoneyRecv:  recvList[3],
 	}
 	// fmt.Sprintf("订单: %s 销售: %s 销售总额: %s 实收: %s", countRetn, sellCountRetn, moneyPrice, moneyRecv)
 	sessionList := dao.QuerySession(dataStr)
@@ -36,7 +38,7 @@ func QueryOrderByDay(w http.ResponseWriter, req *http.Request) {
 		info.Addr = session[0]
 		info.Time = session[1]
 
-		recvList := dao.QuerySessionInfo(time)
+		recvList = dao.QuerySessionInfo(time)
 		info.OrderCount = recvList[0]
 		info.SellCount = recvList[1]
 		info.MoneyPrice = recvList[2]

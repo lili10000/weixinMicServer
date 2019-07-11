@@ -79,6 +79,24 @@ func QuerySellMoneyRecvDay(day string) string {
 	return QueryCountBySql(sql)
 }
 
+func QueryDayInfo(time string) []string {
+	sql := fmt.Sprintf("select count(distinct CO_SERIAL_CODE),sum(MD_COUNT), ROUND(sum(MD_ORIGINAL_ACOUNT),2), ROUND(sum(MD_ACOUNT),2) from view_order_pay where (TO_DAYS(CO_ORDER_DATE)=TO_DAYS('%s') and %s)", time, condition)
+	rows, err := db.Query(sql)
+	defer rows.Close()
+	checkErr(err)
+	retnList := make([]string, 0)
+	for rows.Next() {
+		var count, sell, price, recv string
+		err = rows.Scan(&count, &sell, &price, &recv)
+		checkErr(err)
+		retnList = append(retnList, count)
+		retnList = append(retnList, sell)
+		retnList = append(retnList, price)
+		retnList = append(retnList, recv)
+	}
+	return retnList
+}
+
 type Element []string
 type SessionList []Element
 
