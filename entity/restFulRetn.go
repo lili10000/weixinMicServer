@@ -16,7 +16,7 @@ type SessionInfo struct {
 }
 
 type OrderCount struct {
-	Sum    string   `json:"sum"`
+	Sum  SessionInfo   `json:"sum"`
 	Info []SessionInfo `json:"detail"`
 }
 
