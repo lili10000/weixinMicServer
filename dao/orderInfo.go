@@ -77,24 +77,48 @@ func QuerySellMoneyRecvDay(day string) string {
 	return QueryCountBySql(sql)
 }
 
-// func QuerySellMoneyRecvToday() string {
-// 	return QuerySellMoneyPriceDay("now()")
-// }
+type Element []string
+type SessionList []Element
 
-// func QuerySellMoneyPriceToday() string {
-// 	return QuerySellMoneyPriceDay("now()")
-// }
+func QuerySession(day string) SessionList {
+	sql := fmt.Sprintf("select CA_ADDRESS,CO_RESERVATION_DATE from view_order_refund_amount where (TO_DAYS(CO_RESERVATION_DATE)=TO_DAYS('%s'));", day)
+	rows, err := db.Query(sql)
+	defer rows.Close()
+	checkErr(err)
+	retnList := make(SessionList, 0)
+	for rows.Next() {
+		var addr string
+		var endData string
+		err = rows.Scan(&addr, &endData)
+		checkErr(err)
+		ele := make([]string, 0)
+		ele = append(ele, addr)
+		ele = append(ele, endData)
+		retnList = append(retnList, ele)
+	}
+	return retnList
+}
 
-// func QueryOrderToday() string {
-// 	return QueryOrderDay("now()")
-// }
-// func QuerySellOrderToday() string {
-// 	return QuerySellOrderDay("now()")
-// }
+func QuerySellOrderSession(time string) string {
+	sql := fmt.Sprintf("SELECT count(distinct CO_SERIAL_CODE) FROM view_order_pay where (CO_RESERVATION_DATE = '%s' and CO_STATE = 10 )", time)
+	return QueryCountBySql(sql)
+}
 
-// func QuerySellNumToday() string {
-// 	return QuerySellNumDay("now()")
-// }
+func QuerySellNumSession(time string) string {
+	sql := fmt.Sprintf("select sum(MD_COUNT) from view_order_pay where(CO_RESERVATION_DATE = '%s' and CO_STATE = 10 )", time)
+	return QueryCountBySql(sql)
+}
+
+func QuerySellMoneyPriceSession(time string) string {
+	sql := fmt.Sprintf("select ROUND(sum(MD_ORIGINAL_ACOUNT),2) from view_order_pay where (CO_RESERVATION_DATE = '%s' and CO_STATE = 10 )", time)
+	return QueryCountBySql(sql)
+}
+
+// 实收
+func QuerySellMoneyRecvSession(time string) string {
+	sql := fmt.Sprintf("select ROUND(sum(MD_ACOUNT),2) from view_order_pay where (CO_RESERVATION_DATE = '%s' and CO_STATE = 10 )", time)
+	return QueryCountBySql(sql)
+}
 
 func checkErr(err error) {
 	if err != nil {

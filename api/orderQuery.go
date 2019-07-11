@@ -22,25 +22,24 @@ func QueryOrderByDay(w http.ResponseWriter, req *http.Request) {
 	moneyPrice := dao.QuerySellMoneyPriceDay(dataStr)
 	moneyRecv := dao.QuerySellMoneyRecvDay(dataStr)
 
-	// var countRetn, sellCountRetn, moneyPrice, moneyRecv string
-	// if dataStr := values.Get("date"); len(dataStr) > 0 {
-	// 	countRetn = dao.QuerySellOrderDay(dataStr)
-	// 	sellCountRetn = dao.QuerySellNumDay(dataStr)
-	// 	moneyPrice = dao.QuerySellMoneyPriceDay(dataStr)
-	// 	moneyRecv = dao.QuerySellMoneyRecvDay(dataStr)
-	// } else {
-	// 	countRetn = dao.QuerySellOrderToday()
-	// 	sellCountRetn = dao.QuerySellNumToday()
-	// 	moneyPrice = dao.QuerySellMoneyPriceToday()
-	// 	moneyRecv = dao.QuerySellMoneyRecvToday()
-	// }
-	// count := fmt.Sprintf("%d, 销售数 %d", countRetn, sellCountRetn)
+	var data OrderCount
+	data.Sum = fmt.Sprintf("订单: %s 销售: %s 销售总额: %s 实收: %s", countRetn, sellCountRetn, moneyPrice, moneyRecv)
+	sessionList := dao.QuerySession(dataStr)
+	for _, session := range sessionList {
+		addr := session[0]
+		time := session[1]
+		sessionCount := dao.QuerySellOrderSession(time)
+		sessionSellCount := dao.QuerySellNumSession(time)
+		sessionMoneyPrice := dao.QuerySellMoneyPriceSession(time)
+		sessionMoneyRecv := dao.QuerySellMoneyRecvSession(time)
+		sessionInfo := fmt.Sprintf("场次：%s 时间: %s 订单: %s 销售: %s 销售总额: %s 实收: %s", addr, time, sessionCount, sessionSellCount, sessionMoneyPrice, sessionMoneyRecv)
+		data.Detail = append(data.Detail, sessionInfo)
+	}
+
 	var retn OrderCountRetn
 	retn.Code = errCode.Success
 	retn.Msg = ""
-	retn.Data = OrderCount{
-		Count: fmt.Sprintf("    %s\n销售数:     %s\n销售总额:   %s\n实收金额:   %s", countRetn, sellCountRetn, moneyPrice, moneyRecv),
-	}
+	retn.Data = data
 	retnStr, err := json.Marshal(retn)
 	if err != nil {
 		w.Write([]byte("系统错误"))

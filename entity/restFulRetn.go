@@ -7,7 +7,8 @@ type Comm struct {
 }
 
 type OrderCount struct {
-	Count string `json:"count"`
+	Sum    string   `json:"sum"`
+	Detail []string `json:"detail"`
 }
 
 type OrderCountRetn struct {
