@@ -51,29 +51,31 @@ func QueryCountBySql(sql string) string {
 	return countStr
 }
 
+var condition = "(CO_STATE < 11 and CO_STATE >= 0 )"
+
 func QueryOrderDay(day string) string {
 	sql := fmt.Sprintf("SELECT count(distinct CO_SERIAL_CODE) FROM view_order_pay where (TO_DAYS(CO_ORDER_DATE) = TO_DAYS('%s'))", day)
 	return QueryCountBySql(sql)
 }
 
 func QuerySellOrderDay(day string) string {
-	sql := fmt.Sprintf("SELECT count(distinct CO_SERIAL_CODE) FROM view_order_pay where (TO_DAYS(CO_ORDER_DATE) = TO_DAYS('%s') and CO_STATE = 10 )", day)
+	sql := fmt.Sprintf("SELECT count(distinct CO_SERIAL_CODE) FROM view_order_pay where (TO_DAYS(CO_ORDER_DATE) = TO_DAYS('%s') and %s)", day, condition)
 	return QueryCountBySql(sql)
 }
 
 func QuerySellNumDay(day string) string {
-	sql := fmt.Sprintf("select sum(MD_COUNT) from view_order_pay where (TO_DAYS(CO_ORDER_DATE)=TO_DAYS('%s') and CO_STATE = 10);", day)
+	sql := fmt.Sprintf("select sum(MD_COUNT) from view_order_pay where (TO_DAYS(CO_ORDER_DATE)=TO_DAYS('%s') and %s)", day, condition)
 	return QueryCountBySql(sql)
 }
 
 func QuerySellMoneyPriceDay(day string) string {
-	sql := fmt.Sprintf("select ROUND(sum(MD_ORIGINAL_ACOUNT),2) from view_order_pay where (TO_DAYS(CO_ORDER_DATE)=TO_DAYS('%s') and CO_STATE = 10);", day)
+	sql := fmt.Sprintf("select ROUND(sum(MD_ORIGINAL_ACOUNT),2) from view_order_pay where (TO_DAYS(CO_ORDER_DATE)=TO_DAYS('%s') and %s)", day, condition)
 	return QueryCountBySql(sql)
 }
 
 // 实收
 func QuerySellMoneyRecvDay(day string) string {
-	sql := fmt.Sprintf("select ROUND(sum(MD_ACOUNT),2) from view_order_pay where (TO_DAYS(CO_ORDER_DATE)=TO_DAYS('%s') and CO_STATE = 10);", day)
+	sql := fmt.Sprintf("select ROUND(sum(MD_ACOUNT),2) from view_order_pay where (TO_DAYS(CO_ORDER_DATE)=TO_DAYS('%s') and %s)", day, condition)
 	return QueryCountBySql(sql)
 }
 
@@ -100,24 +102,42 @@ func QuerySession(day string) SessionList {
 }
 
 func QuerySellOrderSession(time string) string {
-	sql := fmt.Sprintf("SELECT count(distinct CO_SERIAL_CODE) FROM view_order_pay where (CO_RESERVATION_DATE = '%s' and CO_STATE = 10 )", time)
+	sql := fmt.Sprintf("SELECT count(distinct CO_SERIAL_CODE) FROM view_order_pay where (CO_RESERVATION_DATE = '%s' and %s)", time, condition)
 	return QueryCountBySql(sql)
 }
 
 func QuerySellNumSession(time string) string {
-	sql := fmt.Sprintf("select sum(MD_COUNT) from view_order_pay where(CO_RESERVATION_DATE = '%s' and CO_STATE = 10 )", time)
+	sql := fmt.Sprintf("select sum(MD_COUNT) from view_order_pay where(CO_RESERVATION_DATE = '%s' and %s)", time, condition)
 	return QueryCountBySql(sql)
 }
 
 func QuerySellMoneyPriceSession(time string) string {
-	sql := fmt.Sprintf("select ROUND(sum(MD_ORIGINAL_ACOUNT),2) from view_order_pay where (CO_RESERVATION_DATE = '%s' and CO_STATE = 10 )", time)
+	sql := fmt.Sprintf("select ROUND(sum(MD_ORIGINAL_ACOUNT),2) from view_order_pay where (CO_RESERVATION_DATE = '%s' and %s)", time, condition)
 	return QueryCountBySql(sql)
 }
 
 // 实收
 func QuerySellMoneyRecvSession(time string) string {
-	sql := fmt.Sprintf("select ROUND(sum(MD_ACOUNT),2) from view_order_pay where (CO_RESERVATION_DATE = '%s' and CO_STATE = 10 )", time)
+	sql := fmt.Sprintf("select ROUND(sum(MD_ACOUNT),2) from view_order_pay where (CO_RESERVATION_DATE = '%s' and %s)", time, condition)
 	return QueryCountBySql(sql)
+}
+
+func QuerySessionInfo(time string) []string {
+	sql := fmt.Sprintf("select count(distinct CO_SERIAL_CODE),sum(MD_COUNT), ROUND(sum(MD_ORIGINAL_ACOUNT),2), ROUND(sum(MD_ACOUNT),2) from view_order_pay where (CO_RESERVATION_DATE = '%s' and %s)", time, condition)
+	rows, err := db.Query(sql)
+	defer rows.Close()
+	checkErr(err)
+	retnList := make([]string, 0)
+	for rows.Next() {
+		var count, sell, price, recv string
+		err = rows.Scan(&count, &sell, &price, &recv)
+		checkErr(err)
+		retnList = append(retnList, count)
+		retnList = append(retnList, sell)
+		retnList = append(retnList, price)
+		retnList = append(retnList, recv)
+	}
+	return retnList
 }
 
 func checkErr(err error) {

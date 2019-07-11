@@ -35,10 +35,17 @@ func QueryOrderByDay(w http.ResponseWriter, req *http.Request) {
 		time := session[1]
 		info.Addr = session[0]
 		info.Time = session[1]
-		info.OrderCount = dao.QuerySellOrderSession(time)
-		info.SellCount = dao.QuerySellNumSession(time)
-		info.MoneyPrice = dao.QuerySellMoneyPriceSession(time)
-		info.MoneyRecv = dao.QuerySellMoneyRecvSession(time)
+
+		recvList := dao.QuerySessionInfo(time)
+		info.OrderCount = recvList[0]
+		info.SellCount = recvList[1]
+		info.MoneyPrice = recvList[2]
+		info.MoneyRecv = recvList[3]
+
+		// info.OrderCount = dao.QuerySellOrderSession(time)
+		// info.SellCount = dao.QuerySellNumSession(time)
+		// info.MoneyPrice = dao.QuerySellMoneyPriceSession(time)
+		// info.MoneyRecv = dao.QuerySellMoneyRecvSession(time)
 		// sessionInfo := fmt.Sprintf("时间: %s	场次：%s\n订单: %s 销售: %s 销售总额: %s 实收: %s", time, addr, sessionCount, sessionSellCount, sessionMoneyPrice, sessionMoneyRecv)
 		data.Info = append(data.Info, info)
 	}
