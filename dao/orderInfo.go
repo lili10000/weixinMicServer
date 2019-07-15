@@ -54,33 +54,33 @@ func QueryCountBySql(sql string) string {
 var condition = "(CO_STATE < 11 and CO_STATE >= 0 )"
 
 func QueryOrderDay(day string) string {
-	sql := fmt.Sprintf("SELECT count(distinct CO_SERIAL_CODE) FROM view_order_pay where (TO_DAYS(CO_ORDER_DATE) = TO_DAYS('%s'))", day)
+	sql := fmt.Sprintf("SELECT count(distinct CO_SERIAL_CODE) FROM view_order_pay where (TO_DAYS(CO_RESERVATION_DATE) = TO_DAYS('%s'))", day)
 	return QueryCountBySql(sql)
 }
 
 func QuerySellOrderDay(day string) string {
-	sql := fmt.Sprintf("SELECT count(distinct CO_SERIAL_CODE) FROM view_order_pay where (TO_DAYS(CO_ORDER_DATE) = TO_DAYS('%s') and %s)", day, condition)
+	sql := fmt.Sprintf("SELECT count(distinct CO_SERIAL_CODE) FROM view_order_pay where (TO_DAYS(CO_RESERVATION_DATE) = TO_DAYS('%s') and %s)", day, condition)
 	return QueryCountBySql(sql)
 }
 
 func QuerySellNumDay(day string) string {
-	sql := fmt.Sprintf("select sum(MD_COUNT) from view_order_pay where (TO_DAYS(CO_ORDER_DATE)=TO_DAYS('%s') and %s)", day, condition)
+	sql := fmt.Sprintf("select sum(MD_COUNT) from view_order_pay where (TO_DAYS(CO_RESERVATION_DATE)=TO_DAYS('%s') and %s)", day, condition)
 	return QueryCountBySql(sql)
 }
 
 func QuerySellMoneyPriceDay(day string) string {
-	sql := fmt.Sprintf("select ROUND(sum(MD_ORIGINAL_ACOUNT),2) from view_order_pay where (TO_DAYS(CO_ORDER_DATE)=TO_DAYS('%s') and %s)", day, condition)
+	sql := fmt.Sprintf("select ROUND(sum(MD_ORIGINAL_ACOUNT),2) from view_order_pay where (TO_DAYS(CO_RESERVATION_DATE)=TO_DAYS('%s') and %s)", day, condition)
 	return QueryCountBySql(sql)
 }
 
 // 实收
 func QuerySellMoneyRecvDay(day string) string {
-	sql := fmt.Sprintf("select ROUND(sum(MD_ACOUNT),2) from view_order_pay where (TO_DAYS(CO_ORDER_DATE)=TO_DAYS('%s') and %s)", day, condition)
+	sql := fmt.Sprintf("select ROUND(sum(MD_ACOUNT),2) from view_order_pay where (TO_DAYS(CO_RESERVATION_DATE)=TO_DAYS('%s') and %s)", day, condition)
 	return QueryCountBySql(sql)
 }
 
 func QueryDayInfo(time string) []string {
-	sql := fmt.Sprintf("select count(distinct CO_SERIAL_CODE),sum(MD_COUNT), ROUND(sum(MD_ORIGINAL_ACOUNT),2), ROUND(sum(MD_ACOUNT),2) from view_order_pay where (TO_DAYS(CO_ORDER_DATE)=TO_DAYS('%s') and %s)", time, condition)
+	sql := fmt.Sprintf("select count(distinct CO_SERIAL_CODE),sum(MD_COUNT), ROUND(sum(MD_ORIGINAL_ACOUNT),2), ROUND(sum(MD_ACOUNT),2) from view_order_pay where (TO_DAYS(CO_RESERVATION_DATE)=TO_DAYS('%s') and %s)", time, condition)
 	rows, err := db.Query(sql)
 	defer rows.Close()
 	checkErr(err)

@@ -30,7 +30,7 @@ func (p *LogUtil) InitLog(path string) {
 	var err error
 	single = logging.MustGetLogger("example")
 	var format = logging.MustStringFormatter(
-		`%{color}%{time:15:04:05.000} %{shortfunc} > %{level:.4s} %{id:03x} %{message}`,
+		`%{color}%{time:15:04:05.000} %{shortfunc} > %{level:.4s} %{id:03x}%{color:reset} %{message}`,
 	)
 
 	filePath = path

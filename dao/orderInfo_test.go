@@ -49,10 +49,15 @@ import (
 // 	fmt.Println("QuerySellMoneyRecvSession", count)
 // }
 
-func TestQuerySessionInfo(t *testing.T) {
-	count := QuerySessionInfo("2019-07-10 12:00:00")
-	fmt.Println("QuerySessionInfo", count)
+// func TestQuerySessionInfo(t *testing.T) {
+// 	count := QuerySessionInfo("2019-07-10 12:00:00")
+// 	fmt.Println("QuerySessionInfo", count)
+// }
+func TestQueryDayInfo(t *testing.T) {
+	count := QueryDayInfo("2019-07-11")
+	fmt.Println("QueryDayInfo", count)
 }
+
 
 // func TestQuerySellOrderDay(t *testing.T) {
 // 	count := QuerySellOrderDay("2019-07-10")

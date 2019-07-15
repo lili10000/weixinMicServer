@@ -11,9 +11,9 @@ import (
 
 var config entity.ConfigJson
 
-var configPath = "config/application.json"
+// var configPath = "config/application.json"
 
-// var configPath = "../config/application.json"
+var configPath = "../config/application.json"
 
 type Config struct {
 	initFlag bool
