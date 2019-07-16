@@ -13,6 +13,8 @@ var db *sql.DB
 var log util.LogUtil
 var config util.Config
 
+// type NullInt64 sql.NullInt64
+
 func init() {
 	var err error
 	mysqlConfig := config.Get()
@@ -80,7 +82,7 @@ func QuerySellMoneyRecvDay(day string) string {
 }
 
 func QueryDayInfo(time string) []string {
-	sql := fmt.Sprintf("select count(distinct CO_SERIAL_CODE),sum(MD_COUNT), ROUND(sum(MD_ORIGINAL_ACOUNT),2), ROUND(sum(MD_ACOUNT),2) from view_order_pay where (TO_DAYS(CO_RESERVATION_DATE)=TO_DAYS('%s') and %s)", time, condition)
+	sql := fmt.Sprintf("select IFNULL(count(distinct CO_SERIAL_CODE),0),IFNULL(sum(MD_COUNT),0), IFNULL(ROUND(sum(MD_ORIGINAL_ACOUNT),2), 0), IFNULL(ROUND(sum(MD_ACOUNT),2),0)  from view_order_pay where (TO_DAYS(CO_RESERVATION_DATE)=TO_DAYS('%s') and %s)", time, condition)
 	rows, err := db.Query(sql)
 	defer rows.Close()
 	checkErr(err)
@@ -101,7 +103,7 @@ type Element []string
 type SessionList []Element
 
 func QuerySession(day string) SessionList {
-	sql := fmt.Sprintf("select CA_ADDRESS,CO_RESERVATION_DATE from view_order_refund_amount where (TO_DAYS(CO_RESERVATION_DATE)=TO_DAYS('%s'));", day)
+	sql := fmt.Sprintf("select CA_ADDRESS,CO_RESERVATION_DATE from view_order_refund_amount where (TO_DAYS(CO_RESERVATION_DATE)=TO_DAYS('%s') );", day)
 	rows, err := db.Query(sql)
 	defer rows.Close()
 	checkErr(err)
@@ -141,14 +143,21 @@ func QuerySellMoneyRecvSession(time string) string {
 }
 
 func QuerySessionInfo(time string) []string {
-	sql := fmt.Sprintf("select count(distinct CO_SERIAL_CODE),sum(MD_COUNT), ROUND(sum(MD_ORIGINAL_ACOUNT),2), ROUND(sum(MD_ACOUNT),2) from view_order_pay where (CO_RESERVATION_DATE = '%s' and %s)", time, condition)
+	sql := fmt.Sprintf("select IFNULL(count(distinct CO_SERIAL_CODE),0),IFNULL(sum(MD_COUNT),0), IFNULL(ROUND(sum(MD_ORIGINAL_ACOUNT),2), 0), IFNULL(ROUND(sum(MD_ACOUNT),2),0) from view_order_pay where (CO_RESERVATION_DATE = '%s' and %s)", time, condition)
+	// fmt.Println(sql)
 	rows, err := db.Query(sql)
 	defer rows.Close()
 	checkErr(err)
 	retnList := make([]string, 0)
 	for rows.Next() {
 		var count, sell, price, recv string
+		defer func() { // 必须要先声明defer，否则不能捕获到panic异常
+			if err := recover(); err != nil {
+				log.Error(err)
+			}
+		}()
 		err = rows.Scan(&count, &sell, &price, &recv)
+
 		checkErr(err)
 		retnList = append(retnList, count)
 		retnList = append(retnList, sell)

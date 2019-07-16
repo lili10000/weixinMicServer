@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 	"weixin/dao"
@@ -31,7 +30,7 @@ func QueryOrderByDay(w http.ResponseWriter, req *http.Request) {
 		MoneyPrice: recvList[2],
 		MoneyRecv:  recvList[3],
 	}
-	fmt.Println(data.Sum)
+	// fmt.Println(data.Sum)
 	// fmt.Sprintf("订单: %s 销售: %s 销售总额: %s 实收: %s", countRetn, sellCountRetn, moneyPrice, moneyRecv)
 	sessionList := dao.QuerySession(dataStr)
 	for _, session := range sessionList {
